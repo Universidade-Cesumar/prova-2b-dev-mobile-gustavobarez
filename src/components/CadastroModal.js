@@ -39,7 +39,9 @@ export default function CadastroModal({ visible, onClose, onSucesso }) {
               <Text style={styles.label}>Quantidade *</Text>
               <TextInput
                 style={styles.input}
+                testID="input-quantidade"
                 placeholder="Ex: 50"
+                keyboardType="numeric"
                 placeholderTextColor={COLORS.textMuted}
                 value={quantidade}
                 onChangeText={setQuantidade}
