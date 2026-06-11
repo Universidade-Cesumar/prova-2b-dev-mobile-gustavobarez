@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import {
-  View, Text, FlatList, StyleSheet,
+  View, Text, FlatList, StyleSheet, TouchableOpacity,
   SafeAreaView, StatusBar, Alert, RefreshControl,
 } from 'react-native';
 import { COLORS, ENDPOINTS } from '../constants';
 import MaterialCard from '../components/MaterialCard';
+import CadastroModal from '../components/CadastroModal';
 import EmptyState from '../components/EmptyState';
 
 export default function HomeScreen() {
   const [materiais, setMateriais] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
 
   const fetchMateriais = async () => {
     try {
@@ -26,13 +28,12 @@ export default function HomeScreen() {
     }
   };
 
-  useEffect(() => {
-    fetchMateriais();
-  }, []);
+  useEffect(() => { fetchMateriais(); }, []);
 
-  const handleRefresh = () => {
-    setRefreshing(true);
-    fetchMateriais();
+  const handleRefresh = () => { setRefreshing(true); fetchMateriais(); };
+
+  const handleMaterialCadastrado = (novo) => {
+    setMateriais((prev) => [novo, ...prev]);
   };
 
   return (
@@ -62,6 +63,18 @@ export default function HomeScreen() {
             tintColor={COLORS.primary}
           />
         }
+        showsVerticalScrollIndicator={false}
+      />
+
+      <TouchableOpacity style={styles.fab} onPress={() => setModalVisible(true)}>
+        <Text style={styles.fabText}>＋</Text>
+        <Text style={styles.fabLabel}>Novo Material</Text>
+      </TouchableOpacity>
+
+      <CadastroModal
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        onSucesso={handleMaterialCadastrado}
       />
     </SafeAreaView>
   );
@@ -86,9 +99,19 @@ const styles = StyleSheet.create({
     letterSpacing: 1.2,
     marginBottom: 2,
   },
-  headerTitle: {
-    fontSize: 28,
-    fontWeight: '900',
-    color: '#FFFFFF',
+  headerTitle: { fontSize: 28, fontWeight: '900', color: '#FFFFFF' },
+  fab: {
+    position: 'absolute',
+    bottom: 28, right: 20,
+    backgroundColor: COLORS.primary,
+    borderRadius: 28,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 14,
+    paddingHorizontal: 20,
+    elevation: 8,
+    gap: 8,
   },
+  fabText: { fontSize: 22, color: '#fff', fontWeight: '300', lineHeight: 24 },
+  fabLabel: { color: '#fff', fontWeight: '800', fontSize: 15 },
 });
