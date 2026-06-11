@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
   View, Text, FlatList, StyleSheet,
-  SafeAreaView, StatusBar, Alert,
+  SafeAreaView, StatusBar, Alert, RefreshControl,
 } from 'react-native';
 import { COLORS, ENDPOINTS } from '../constants';
 import MaterialCard from '../components/MaterialCard';
@@ -10,6 +10,7 @@ import EmptyState from '../components/EmptyState';
 export default function HomeScreen() {
   const [materiais, setMateriais] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
 
   const fetchMateriais = async () => {
     try {
@@ -21,12 +22,18 @@ export default function HomeScreen() {
       Alert.alert('Erro', 'Não foi possível carregar o estoque. Verifique a URL do MockAPI.');
     } finally {
       setLoading(false);
+      setRefreshing(false);
     }
   };
 
   useEffect(() => {
     fetchMateriais();
   }, []);
+
+  const handleRefresh = () => {
+    setRefreshing(true);
+    fetchMateriais();
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -47,6 +54,14 @@ export default function HomeScreen() {
         renderItem={({ item }) => <MaterialCard item={item} />}
         contentContainerStyle={materiais.length === 0 ? { flex: 1 } : { paddingBottom: 100 }}
         ListEmptyComponent={<EmptyState loading={loading} />}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={handleRefresh}
+            colors={[COLORS.primary]}
+            tintColor={COLORS.primary}
+          />
+        }
       />
     </SafeAreaView>
   );
