@@ -17,7 +17,7 @@ export default function MaterialCard({ item }) {
         <View style={styles.header}>
           <View style={styles.headerLeft}>
             <Text style={styles.nome} numberOfLines={2}>
-              {item.nome}
+              {item.name}
             </Text>
             <View
               style={[
