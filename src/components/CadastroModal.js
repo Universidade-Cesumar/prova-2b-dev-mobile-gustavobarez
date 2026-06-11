@@ -48,7 +48,7 @@ export default function CadastroModal({ visible, onClose, onSucesso }) {
               />
             </View>
 
-            <TouchableOpacity style={styles.btnCadastrar} onPress={onClose}>
+            <TouchableOpacity testID="btn-cadastrar" style={styles.btnCadastrar} onPress={onClose}>
               <Text style={styles.btnCadastrarText}>Cadastrar Material</Text>
             </TouchableOpacity>
             <View style={{ height: 20 }} />
