@@ -14,6 +14,7 @@ export default function HomeScreen() {
   const [refreshing, setRefreshing] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
 
+  // Busca todos os materiais do estoque via GET
   const fetchMateriais = async () => {
     try {
       const response = await fetch(ENDPOINTS.materiais);
