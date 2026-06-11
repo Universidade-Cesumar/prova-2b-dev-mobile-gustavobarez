@@ -10,9 +10,10 @@ export default function CadastroModal({ visible, onClose, onSucesso }) {
   const [nome, setNome] = useState('');
   const [quantidade, setQuantidade] = useState('');
   const [categoria, setCategoria] = useState('consumo');
+  const [dataValidade, setDataValidade] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const limpar = () => { setNome(''); setQuantidade(''); setCategoria('consumo'); };
+  const limpar = () => { setNome(''); setQuantidade(''); setCategoria('consumo'); setDataValidade(''); };
 
   const handleCadastrar = async () => {
     if (!nome.trim()) { Alert.alert('Campo obrigatório', 'Informe o nome do material.'); return; }
@@ -28,7 +29,7 @@ export default function CadastroModal({ visible, onClose, onSucesso }) {
           name: nome.trim(),
           quantidade: Number(quantidade),
           categoria,
-          dataValidade: new Date().toISOString(),
+          dataValidade: dataValidade.trim() || '',
         }),
       });
       if (!response.ok) throw new Error('Erro ao cadastrar');
@@ -94,6 +95,16 @@ export default function CadastroModal({ visible, onClose, onSucesso }) {
                   </TouchableOpacity>
                 ))}
               </View>
+            </View>
+            <View style={styles.fieldGroup}>
+              <Text style={styles.label}>Data de Validade</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Ex: 2026-12-31"
+                placeholderTextColor={COLORS.textMuted}
+                value={dataValidade}
+                onChangeText={setDataValidade}
+              />
             </View>
             <TouchableOpacity
               testID="btn-cadastrar"
