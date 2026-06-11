@@ -25,10 +25,10 @@ export default function CadastroModal({ visible, onClose, onSucesso }) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          nome: nome.trim(),
+          name: nome.trim(),
           quantidade: Number(quantidade),
           categoria,
-          createdAt: new Date().toISOString(),
+          dataValidade: new Date().toISOString(),
         }),
       });
       if (!response.ok) throw new Error('Erro ao cadastrar');
