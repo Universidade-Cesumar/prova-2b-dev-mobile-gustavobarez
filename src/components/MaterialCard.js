@@ -4,9 +4,10 @@ import { COLORS } from '../constants';
 
 export default function MaterialCard({ item }) {
   const isConsumo = item.categoria === 'consumo';
+  const isZerado = Number(item.quantidade) === 0;
 
   return (
-    <View style={styles.card}>
+    <View style={[styles.card, isZerado && styles.cardZerado]}>
       <View style={[styles.sidebar, { backgroundColor: isConsumo ? COLORS.accent : COLORS.primary }]} />
       <View style={styles.content}>
         <View style={styles.header}>
@@ -18,11 +19,18 @@ export default function MaterialCard({ item }) {
               </Text>
             </View>
           </View>
-          <View style={styles.qtdBox}>
-            <Text style={styles.qtdNum}>{item.quantidade}</Text>
-            <Text style={styles.qtdLabel}>unid.</Text>
+          <View style={[styles.qtdBox, isZerado && styles.qtdBoxZerado]}>
+            <Text style={[styles.qtdNum, isZerado && styles.qtdNumZerado]}>
+              {item.quantidade}
+            </Text>
+            <Text style={[styles.qtdLabel, isZerado && styles.qtdLabelZerado]}>
+              {isZerado ? 'ZERADO' : 'unid.'}
+            </Text>
           </View>
         </View>
+        {isZerado && (
+          <Text style={styles.alertaZerado}>⛔ Este item está zerado no estoque!</Text>
+        )}
       </View>
     </View>
   );
@@ -42,6 +50,7 @@ const styles = StyleSheet.create({
     elevation: 3,
     overflow: 'hidden',
   },
+  cardZerado: { borderWidth: 1, borderColor: COLORS.danger },
   sidebar: { width: 5 },
   content: { flex: 1, padding: 14 },
   header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' },
@@ -50,11 +59,13 @@ const styles = StyleSheet.create({
   badge: { alignSelf: 'flex-start', paddingHorizontal: 8, paddingVertical: 3, borderRadius: 20 },
   badgeText: { fontSize: 11, fontWeight: '600' },
   qtdBox: {
-    alignItems: 'center',
-    backgroundColor: '#E6F7F1',
-    borderRadius: 10,
-    paddingHorizontal: 12, paddingVertical: 8, minWidth: 60,
+    alignItems: 'center', backgroundColor: '#E6F7F1',
+    borderRadius: 10, paddingHorizontal: 12, paddingVertical: 8, minWidth: 60,
   },
+  qtdBoxZerado: { backgroundColor: '#FDECEB' },
   qtdNum: { fontSize: 22, fontWeight: '800', color: COLORS.accent },
+  qtdNumZerado: { color: COLORS.danger, fontSize: 18 },
   qtdLabel: { fontSize: 10, color: COLORS.accent, fontWeight: '600', textTransform: 'uppercase' },
+  qtdLabelZerado: { color: COLORS.danger, fontSize: 9 },
+  alertaZerado: { fontSize: 12, color: COLORS.danger, fontWeight: '700', marginTop: 8 },
 });
