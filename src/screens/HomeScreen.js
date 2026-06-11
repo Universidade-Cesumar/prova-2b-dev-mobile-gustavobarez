@@ -1,13 +1,20 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, StatusBar } from 'react-native';
+import {
+  View, Text, FlatList, StyleSheet,
+  SafeAreaView, StatusBar,
+} from 'react-native';
 import { COLORS } from '../constants';
+import MaterialCard from '../components/MaterialCard';
+import EmptyState from '../components/EmptyState';
 
 export default function HomeScreen() {
   const [materiais, setMateriais] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor={COLORS.primaryDark} />
+
       <View style={styles.header}>
         <View>
           <Text style={styles.headerEyebrow}>Laboratório de Enfermagem</Text>
@@ -15,6 +22,15 @@ export default function HomeScreen() {
         </View>
         <Text style={{ fontSize: 28 }}>🏥</Text>
       </View>
+
+      <FlatList
+        testID="lista-materiais"
+        data={materiais}
+        keyExtractor={(item) => String(item.id)}
+        renderItem={({ item }) => <MaterialCard item={item} />}
+        contentContainerStyle={materiais.length === 0 ? { flex: 1 } : { paddingBottom: 100 }}
+        ListEmptyComponent={<EmptyState loading={loading} />}
+      />
     </SafeAreaView>
   );
 }
