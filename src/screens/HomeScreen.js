@@ -1,15 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View, Text, FlatList, StyleSheet,
-  SafeAreaView, StatusBar,
+  SafeAreaView, StatusBar, Alert,
 } from 'react-native';
-import { COLORS } from '../constants';
+import { COLORS, ENDPOINTS } from '../constants';
 import MaterialCard from '../components/MaterialCard';
 import EmptyState from '../components/EmptyState';
 
 export default function HomeScreen() {
   const [materiais, setMateriais] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  const fetchMateriais = async () => {
+    try {
+      const response = await fetch(ENDPOINTS.materiais);
+      if (!response.ok) throw new Error('Erro na requisição');
+      const data = await response.json();
+      setMateriais(data);
+    } catch (error) {
+      Alert.alert('Erro', 'Não foi possível carregar o estoque. Verifique a URL do MockAPI.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchMateriais();
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
