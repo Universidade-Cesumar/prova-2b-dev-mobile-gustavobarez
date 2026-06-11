@@ -2,16 +2,56 @@ import React, { useState } from 'react';
 import {
   View, Text, TextInput, TouchableOpacity,
   StyleSheet, Modal, ScrollView,
+  ActivityIndicator, Alert, KeyboardAvoidingView, Platform,
 } from 'react-native';
-import { COLORS } from '../constants';
+import { COLORS, ENDPOINTS } from '../constants';
 
 export default function CadastroModal({ visible, onClose, onSucesso }) {
   const [nome, setNome] = useState('');
   const [quantidade, setQuantidade] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const limpar = () => { setNome(''); setQuantidade(''); };
+
+  const handleCadastrar = async () => {
+    if (!nome.trim()) {
+      Alert.alert('Campo obrigatório', 'Informe o nome do material.');
+      return;
+    }
+    if (!quantidade || isNaN(Number(quantidade)) || Number(quantidade) < 0) {
+      Alert.alert('Campo inválido', 'Informe uma quantidade válida.');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await fetch(ENDPOINTS.materiais, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          nome: nome.trim(),
+          quantidade: Number(quantidade),
+          createdAt: new Date().toISOString(),
+        }),
+      });
+      if (!response.ok) throw new Error('Erro ao cadastrar');
+      const criado = await response.json();
+      onSucesso(criado);
+      limpar();
+      onClose();
+    } catch (error) {
+      Alert.alert('Erro', 'Não foi possível cadastrar. Verifique a URL do MockAPI em constants.js');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>
-      <View style={styles.overlay}>
+      <KeyboardAvoidingView
+        style={styles.overlay}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      >
         <View style={styles.sheet}>
           <View style={styles.handle} />
 
@@ -26,35 +66,45 @@ export default function CadastroModal({ visible, onClose, onSucesso }) {
             <View style={styles.fieldGroup}>
               <Text style={styles.label}>Nome do Material *</Text>
               <TextInput
-                style={styles.input}
                 testID="input-nome"
+                style={styles.input}
                 placeholder="Ex: Seringa 10ml..."
                 placeholderTextColor={COLORS.textMuted}
                 value={nome}
                 onChangeText={setNome}
+                autoCapitalize="words"
               />
             </View>
 
             <View style={styles.fieldGroup}>
               <Text style={styles.label}>Quantidade *</Text>
               <TextInput
-                style={styles.input}
                 testID="input-quantidade"
+                style={styles.input}
                 placeholder="Ex: 50"
-                keyboardType="numeric"
                 placeholderTextColor={COLORS.textMuted}
                 value={quantidade}
                 onChangeText={setQuantidade}
+                keyboardType="numeric"
               />
             </View>
 
-            <TouchableOpacity testID="btn-cadastrar" style={styles.btnCadastrar} onPress={onClose}>
-              <Text style={styles.btnCadastrarText}>Cadastrar Material</Text>
+            <TouchableOpacity
+              testID="btn-cadastrar"
+              style={[styles.btnCadastrar, loading && styles.btnDisabled]}
+              onPress={handleCadastrar}
+              disabled={loading}
+              activeOpacity={0.85}
+            >
+              {loading
+                ? <ActivityIndicator color="#fff" />
+                : <Text style={styles.btnCadastrarText}>✔  Cadastrar Material</Text>
+              }
             </TouchableOpacity>
             <View style={{ height: 20 }} />
           </ScrollView>
         </View>
-      </View>
+      </KeyboardAvoidingView>
     </Modal>
   );
 }
@@ -112,6 +162,8 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.primary,
     borderRadius: 12, paddingVertical: 16,
     alignItems: 'center', marginTop: 8,
+    elevation: 4,
   },
+  btnDisabled: { opacity: 0.6 },
   btnCadastrarText: { color: '#fff', fontSize: 16, fontWeight: '800' },
 });
