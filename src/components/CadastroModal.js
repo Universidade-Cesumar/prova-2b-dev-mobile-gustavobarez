@@ -27,6 +27,7 @@ export default function CadastroModal({ visible, onClose, onSucesso }) {
               <Text style={styles.label}>Nome do Material *</Text>
               <TextInput
                 style={styles.input}
+                testID="input-nome"
                 placeholder="Ex: Seringa 10ml..."
                 placeholderTextColor={COLORS.textMuted}
                 value={nome}
