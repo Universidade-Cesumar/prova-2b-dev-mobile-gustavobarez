@@ -26,6 +26,10 @@ export default function App() {
     setRetiradas(prev => ({ ...prev, [item.id]: '' }));
   };
 
+  const handleExcluir = (id) => {
+    setMateriais(prev => prev.filter(m => m.id !== id));
+  };
+
   const filtrados = materiais.filter(m => m.name.toLowerCase().includes(busca.toLowerCase()));
 
   return (
