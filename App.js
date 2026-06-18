@@ -11,7 +11,7 @@ export default function App() {
 
   const handleCadastrar = () => {
     if (!nome.trim() || !quantidade.trim()) return;
-    setMateriais(prev => [...prev, { id: String(Date.now()), name: nome, quantidade }]);
+    setMateriais(prev => [...prev, { id: String(Date.now()), name: nome, quantidade: Number(quantidade) }]);
     setNome('');
     setQuantidade('');
   };
