@@ -5,6 +5,28 @@ import { validarRetirada } from "../../../src/utils/validacoes";
 
 export default function MaterialCard({ item, onUpdate, onDelete }) {
   const [qtdRetirada, setQtdRetirada] = useState('');
+
+  const handleBaixar = async () => {
+    const quantidade = Number(qtdRetirada);
+    if (!validarRetirada(Number(item.quantidade), quantidade)) {
+      Alert.alert('Erro', 'Quantidade inválida para retirada');
+      return;
+    }
+    try {
+      const novaQtd = Number(item.quantidade) - quantidade;
+      const response = await fetch(`${ENDPOINTS.materiais}/${item.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...item, quantidade: novaQtd }),
+      });
+      if (!response.ok) throw new Error('Erro ao atualizar');
+      const atualizado = await response.json();
+      onUpdate && onUpdate(atualizado);
+      setQtdRetirada('');
+    } catch (error) {
+      Alert.alert('Erro', 'Não foi possível realizar a baixa');
+    }
+  };
   const isConsumo = item.categoria === "consumo";
   const isZerado = Number(item.quantidade) === 0;
 
