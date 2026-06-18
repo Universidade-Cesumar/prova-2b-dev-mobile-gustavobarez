@@ -51,6 +51,14 @@ export default function HomeScreen() {
     setMateriais((prev) => [novo, ...prev]);
   };
 
+  const handleUpdate = (atualizado) => {
+    setMateriais((prev) => prev.map((m) => m.id === atualizado.id ? atualizado : m));
+  };
+
+  const handleDelete = (id) => {
+    setMateriais((prev) => prev.filter((m) => m.id !== id));
+  };
+
   const totalItens = materiais.length;
   const itensZerados = materiais.filter(
     (m) => Number(m.quantidade) === 0,
@@ -99,7 +107,7 @@ export default function HomeScreen() {
         testID="lista-materiais"
         data={materiais}
         keyExtractor={(item) => String(item.id)}
-        renderItem={({ item }) => <MaterialCard item={item} />}
+        renderItem={({ item }) => <MaterialCard item={item} onUpdate={handleUpdate} onDelete={handleDelete} />}
         contentContainerStyle={
           materiais.length === 0 ? { flex: 1 } : { paddingBottom: 100 }
         }
