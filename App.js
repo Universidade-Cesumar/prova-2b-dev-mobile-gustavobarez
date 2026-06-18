@@ -54,6 +54,9 @@ export default function App() {
             <TouchableOpacity testID="btn-baixar" onPress={() => handleBaixar(item)}>
               <Text>Baixar</Text>
             </TouchableOpacity>
+            <TouchableOpacity testID="btn-excluir" onPress={() => handleExcluir(item.id)}>
+              <Text>Excluir</Text>
+            </TouchableOpacity>
           </View>
         )} />
     </View>
