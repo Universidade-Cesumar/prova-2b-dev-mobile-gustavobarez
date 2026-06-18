@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { COLORS, ENDPOINTS } from "../constants";
-import { validarRetirada } from "../../../src/utils/validacoes";
+import { validarRetirada } from "../utils/validacoes";
 
 export default function MaterialCard({ item, onUpdate, onDelete }) {
   const [qtdRetirada, setQtdRetirada] = useState('');
