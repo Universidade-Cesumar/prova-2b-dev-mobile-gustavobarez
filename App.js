@@ -16,6 +16,16 @@ export default function App() {
     setQuantidade('');
   };
 
+  const handleBaixar = (item) => {
+    const qtdRetirada = Number(retiradas[item.id] || 0);
+    if (!validarRetirada(item.quantidade, qtdRetirada)) {
+      Alert.alert('Erro', 'Quantidade inválida para retirada');
+      return;
+    }
+    setMateriais(prev => prev.map(m => m.id === item.id ? { ...m, quantidade: m.quantidade - qtdRetirada } : m));
+    setRetiradas(prev => ({ ...prev, [item.id]: '' }));
+  };
+
   const filtrados = materiais.filter(m => m.name.toLowerCase().includes(busca.toLowerCase()));
 
   return (
