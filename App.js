@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, TextInput, TouchableOpacity, Text, FlatList, Alert } from 'react-native';
+import { validarRetirada } from './src/utils/validacoes';
 
 export default function App() {
   const [nome, setNome] = useState('');
