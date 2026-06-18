@@ -27,6 +27,17 @@ export default function MaterialCard({ item, onUpdate, onDelete }) {
       Alert.alert('Erro', 'Não foi possível realizar a baixa');
     }
   };
+
+  const handleExcluir = async () => {
+    try {
+      const response = await fetch(`${ENDPOINTS.materiais}/${item.id}`, { method: 'DELETE' });
+      if (!response.ok) throw new Error('Erro ao excluir');
+      onDelete && onDelete(item.id);
+    } catch (error) {
+      Alert.alert('Erro', 'Não foi possível excluir o item');
+    }
+  };
+
   const isConsumo = item.categoria === "consumo";
   const isZerado = Number(item.quantidade) === 0;
 
