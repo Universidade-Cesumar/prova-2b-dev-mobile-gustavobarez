@@ -85,6 +85,22 @@ export default function MaterialCard({ item, onUpdate, onDelete }) {
             ⛔ Este item está zerado no estoque!
           </Text>
         )}
+        <View style={styles.actions}>
+          <TextInput
+            testID="input-retirada"
+            style={styles.inputRetirada}
+            value={qtdRetirada}
+            onChangeText={setQtdRetirada}
+            placeholder="Qtd"
+            keyboardType="numeric"
+          />
+          <TouchableOpacity testID="btn-baixar" style={styles.btnBaixar} onPress={handleBaixar}>
+            <Text style={styles.btnText}>Baixar</Text>
+          </TouchableOpacity>
+          <TouchableOpacity testID="btn-excluir" style={styles.btnExcluir} onPress={handleExcluir}>
+            <Text style={styles.btnText}>Excluir</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );
