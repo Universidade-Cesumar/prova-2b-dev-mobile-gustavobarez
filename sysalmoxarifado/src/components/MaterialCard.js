@@ -17,7 +17,7 @@ export default function MaterialCard({ item, onUpdate, onDelete }) {
       const response = await fetch(`${ENDPOINTS.materiais}/${item.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...item, quantidade: novaQtd }),
+        body: JSON.stringify({ name: item.name, quantidade: novaQtd, categoria: item.categoria }),
       });
       if (!response.ok) throw new Error('Erro ao atualizar');
       const atualizado = await response.json();
