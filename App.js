@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, TextInput, TouchableOpacity, Text, FlatList } from 'react-native';
+import { View, TextInput, TouchableOpacity, Text, FlatList, Alert } from 'react-native';
 
 export default function App() {
   const [nome, setNome] = useState('');
