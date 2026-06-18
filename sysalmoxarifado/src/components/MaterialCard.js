@@ -1,15 +1,36 @@
-import { useState } from "react";
-import { Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { useState, useEffect, useRef } from "react";
+import { Animated, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { COLORS, ENDPOINTS } from "../constants";
 import { validarRetirada } from "../utils/validacoes";
 
+function Toast({ message, type, onHide }) {
+  const opacity = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.sequence([
+      Animated.timing(opacity, { toValue: 1, duration: 200, useNativeDriver: true }),
+      Animated.delay(2500),
+      Animated.timing(opacity, { toValue: 0, duration: 300, useNativeDriver: true }),
+    ]).start(() => onHide());
+  }, []);
+
+  return (
+    <Animated.View style={[styles.toast, type === 'error' ? styles.toastError : styles.toastSuccess, { opacity }]}>
+      <Text style={styles.toastText}>{type === 'error' ? '✕' : '✓'} {message}</Text>
+    </Animated.View>
+  );
+}
+
 export default function MaterialCard({ item, onUpdate, onDelete }) {
   const [qtdRetirada, setQtdRetirada] = useState('');
+  const [toast, setToast] = useState(null);
+
+  const showToast = (message, type) => setToast({ message, type });
 
   const handleBaixar = async () => {
     const quantidade = Number(qtdRetirada);
     if (!validarRetirada(Number(item.quantidade), quantidade)) {
-      Alert.alert('Erro', 'Quantidade inválida para retirada');
+      showToast('Quantidade inválida para retirada', 'error');
       return;
     }
     try {
@@ -19,22 +40,23 @@ export default function MaterialCard({ item, onUpdate, onDelete }) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: item.name, quantidade: novaQtd, categoria: item.categoria }),
       });
-      if (!response.ok) throw new Error('Erro ao atualizar');
+      if (!response.ok) throw new Error('Erro');
       const atualizado = await response.json();
       onUpdate && onUpdate(atualizado);
       setQtdRetirada('');
+      showToast(`Retirada de ${quantidade} realizada`, 'success');
     } catch (error) {
-      Alert.alert('Erro', 'Não foi possível realizar a baixa');
+      showToast('Erro ao realizar a baixa', 'error');
     }
   };
 
   const handleExcluir = async () => {
     try {
       const response = await fetch(`${ENDPOINTS.materiais}/${item.id}`, { method: 'DELETE' });
-      if (!response.ok) throw new Error('Erro ao excluir');
+      if (!response.ok) throw new Error('Erro');
       onDelete && onDelete(item.id);
     } catch (error) {
-      Alert.alert('Erro', 'Não foi possível excluir o item');
+      showToast('Erro ao excluir o item', 'error');
     }
   };
 
@@ -43,57 +65,35 @@ export default function MaterialCard({ item, onUpdate, onDelete }) {
 
   return (
     <View style={[styles.card, isZerado && styles.cardZerado]}>
-      <View
-        style={[
-          styles.sidebar,
-          { backgroundColor: isConsumo ? COLORS.accent : COLORS.primary },
-        ]}
-      />
+      <View style={[styles.sidebar, { backgroundColor: isConsumo ? COLORS.accent : COLORS.primary }]} />
       <View style={styles.content}>
         <View style={styles.header}>
           <View style={styles.headerLeft}>
-            <Text style={styles.nome} numberOfLines={2}>
-              {item.name}
-            </Text>
-            <View
-              style={[
-                styles.badge,
-                { backgroundColor: isConsumo ? "#E6F7F1" : "#E6EEF9" },
-              ]}
-            >
-              <Text
-                style={[
-                  styles.badgeText,
-                  { color: isConsumo ? COLORS.accent : COLORS.primary },
-                ]}
-              >
+            <Text style={styles.nome} numberOfLines={2}>{item.name}</Text>
+            <View style={[styles.badge, { backgroundColor: isConsumo ? "#E6F7F1" : "#E6EEF9" }]}>
+              <Text style={[styles.badgeText, { color: isConsumo ? COLORS.accent : COLORS.primary }]}>
                 {isConsumo ? "🧪 Consumo" : "🔧 Permanente"}
               </Text>
             </View>
           </View>
           <View style={[styles.qtdBox, isZerado && styles.qtdBoxZerado]}>
-            <Text style={[styles.qtdNum, isZerado && styles.qtdNumZerado]}>
-              {item.quantidade}
-            </Text>
-            <Text style={[styles.qtdLabel, isZerado && styles.qtdLabelZerado]}>
-              {isZerado ? "ZERADO" : "unid."}
-            </Text>
+            <Text style={[styles.qtdNum, isZerado && styles.qtdNumZerado]}>{item.quantidade}</Text>
+            <Text style={[styles.qtdLabel, isZerado && styles.qtdLabelZerado]}>{isZerado ? "ZERADO" : "unid."}</Text>
           </View>
         </View>
-        {isZerado && (
-          <Text style={styles.alertaZerado}>
-            ⛔ Este item está zerado no estoque!
-          </Text>
-        )}
+
         <View style={styles.actions}>
-          <TextInput
-            testID="input-retirada"
-            style={styles.inputRetirada}
-            value={qtdRetirada}
-            onChangeText={setQtdRetirada}
-            placeholder="Qtd"
-            keyboardType="numeric"
-          />
+          <View style={styles.fieldGroup}>
+            <Text style={styles.fieldLabel}>Quantidade</Text>
+            <TextInput
+              testID="input-retirada"
+              style={styles.fieldInput}
+              value={qtdRetirada}
+              onChangeText={setQtdRetirada}
+              placeholder="10"
+              placeholderTextColor={COLORS.textMuted}
+            />
+          </View>
           <TouchableOpacity testID="btn-baixar" style={styles.btnBaixar} onPress={handleBaixar}>
             <Text style={styles.btnText}>Baixar</Text>
           </TouchableOpacity>
@@ -101,74 +101,40 @@ export default function MaterialCard({ item, onUpdate, onDelete }) {
             <Text style={styles.btnText}>Excluir</Text>
           </TouchableOpacity>
         </View>
+
+        {toast && (
+          <Toast message={toast.message} type={toast.type} onHide={() => setToast(null)} />
+        )}
       </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  card: {
-    flexDirection: "row",
-    backgroundColor: COLORS.surface,
-    borderRadius: 12,
-    marginHorizontal: 16,
-    marginVertical: 6,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 6,
-    elevation: 3,
-    overflow: "hidden",
-  },
+  card: { flexDirection: "row", backgroundColor: COLORS.surface, borderRadius: 12, marginHorizontal: 16, marginVertical: 6, shadowColor: "#000", shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.08, shadowRadius: 6, elevation: 3, overflow: "hidden" },
   cardZerado: { borderWidth: 1, borderColor: COLORS.danger },
   sidebar: { width: 5 },
   content: { flex: 1, padding: 14 },
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "flex-start",
-  },
+  header: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" },
   headerLeft: { flex: 1, marginRight: 12 },
-  nome: {
-    fontSize: 15,
-    fontWeight: "700",
-    color: COLORS.textPrimary,
-    marginBottom: 5,
-  },
-  badge: {
-    alignSelf: "flex-start",
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 20,
-  },
+  nome: { fontSize: 15, fontWeight: "700", color: COLORS.textPrimary, marginBottom: 5 },
+  badge: { alignSelf: "flex-start", paddingHorizontal: 8, paddingVertical: 3, borderRadius: 20 },
   badgeText: { fontSize: 11, fontWeight: "600" },
-  qtdBox: {
-    alignItems: "center",
-    backgroundColor: "#E6F7F1",
-    borderRadius: 10,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    minWidth: 60,
-  },
+  qtdBox: { alignItems: "center", backgroundColor: "#E6F7F1", borderRadius: 10, paddingHorizontal: 12, paddingVertical: 8, minWidth: 60 },
   qtdBoxZerado: { backgroundColor: "#FDECEB" },
   qtdNum: { fontSize: 22, fontWeight: "800", color: COLORS.accent },
   qtdNumZerado: { color: COLORS.danger, fontSize: 18 },
-  qtdLabel: {
-    fontSize: 10,
-    color: COLORS.accent,
-    fontWeight: "600",
-    textTransform: "uppercase",
-  },
+  qtdLabel: { fontSize: 10, color: COLORS.accent, fontWeight: "600", textTransform: "uppercase" },
   qtdLabelZerado: { color: COLORS.danger, fontSize: 9 },
-  alertaZerado: {
-    fontSize: 12,
-    color: COLORS.danger,
-    fontWeight: "700",
-    marginTop: 8,
-  },
-  actions: { flexDirection: "row", alignItems: "center", marginTop: 10, gap: 8 },
-  inputRetirada: { flex: 1, borderWidth: 1, borderColor: COLORS.border, borderRadius: 8, paddingHorizontal: 10, paddingVertical: 6, fontSize: 14 },
-  btnBaixar: { backgroundColor: COLORS.accent, borderRadius: 8, paddingHorizontal: 12, paddingVertical: 8 },
-  btnExcluir: { backgroundColor: COLORS.danger, borderRadius: 8, paddingHorizontal: 12, paddingVertical: 8 },
+  actions: { flexDirection: "row", alignItems: "flex-end", marginTop: 12, gap: 8 },
+  fieldGroup: { flex: 1 },
+  fieldLabel: { fontSize: 11, fontWeight: "700", color: COLORS.textSecondary, marginBottom: 4, textTransform: "uppercase", letterSpacing: 0.5 },
+  fieldInput: { backgroundColor: COLORS.background, borderWidth: 1.5, borderColor: COLORS.border, borderRadius: 8, paddingHorizontal: 10, paddingVertical: 8, fontSize: 14, color: COLORS.textPrimary },
+  btnBaixar: { backgroundColor: COLORS.accent, borderRadius: 8, paddingHorizontal: 14, paddingVertical: 10 },
+  btnExcluir: { backgroundColor: COLORS.danger, borderRadius: 8, paddingHorizontal: 14, paddingVertical: 10 },
   btnText: { color: "#fff", fontWeight: "700", fontSize: 12 },
+  toast: { position: "absolute", bottom: 8, right: 8, paddingHorizontal: 12, paddingVertical: 8, borderRadius: 8, elevation: 5 },
+  toastSuccess: { backgroundColor: COLORS.accent },
+  toastError: { backgroundColor: COLORS.danger },
+  toastText: { color: "#fff", fontSize: 12, fontWeight: "700" },
 });
