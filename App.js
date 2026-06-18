@@ -51,6 +51,9 @@ export default function App() {
               placeholder="Qtd retirada"
               keyboardType="numeric"
             />
+            <TouchableOpacity testID="btn-baixar" onPress={() => handleBaixar(item)}>
+              <Text>Baixar</Text>
+            </TouchableOpacity>
           </View>
         )} />
     </View>
