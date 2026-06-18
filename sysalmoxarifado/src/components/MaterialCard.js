@@ -166,4 +166,9 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     marginTop: 8,
   },
+  actions: { flexDirection: "row", alignItems: "center", marginTop: 10, gap: 8 },
+  inputRetirada: { flex: 1, borderWidth: 1, borderColor: COLORS.border, borderRadius: 8, paddingHorizontal: 10, paddingVertical: 6, fontSize: 14 },
+  btnBaixar: { backgroundColor: COLORS.accent, borderRadius: 8, paddingHorizontal: 12, paddingVertical: 8 },
+  btnExcluir: { backgroundColor: COLORS.danger, borderRadius: 8, paddingHorizontal: 12, paddingVertical: 8 },
+  btnText: { color: "#fff", fontWeight: "700", fontSize: 12 },
 });
