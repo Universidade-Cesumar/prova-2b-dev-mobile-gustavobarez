@@ -7,6 +7,7 @@ export default function App() {
   const [quantidade, setQuantidade] = useState('');
   const [busca, setBusca] = useState('');
   const [materiais, setMateriais] = useState([]);
+  const [retiradas, setRetiradas] = useState({});
 
   const handleCadastrar = () => {
     if (!nome.trim() || !quantidade.trim()) return;
