@@ -41,7 +41,18 @@ export default function App() {
       </TouchableOpacity>
       <TextInput testID="input-busca" value={busca} onChangeText={setBusca} placeholder="Buscar" />
       <Text testID="total-itens">{filtrados.length}</Text>
-      <FlatList testID="lista-materials" data={filtrados} keyExtractor={item => item.id} renderItem={({ item }) => <Text>{item.name}</Text>} />
+      <FlatList testID="lista-materials" data={filtrados} keyExtractor={item => item.id} renderItem={({ item }) => (
+          <View>
+            <Text>{item.name} - {item.quantidade}</Text>
+            <TextInput
+              testID="input-retirada"
+              value={String(retiradas[item.id] || '')}
+              onChangeText={text => setRetiradas(prev => ({ ...prev, [item.id]: text }))}
+              placeholder="Qtd retirada"
+              keyboardType="numeric"
+            />
+          </View>
+        )} />
     </View>
   );
 }
