@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   Alert,
   FlatList,
@@ -12,17 +12,16 @@ import {
   View,
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import CadastroModal from "../components/CadastroModal";
+import { useFocusEffect } from "@react-navigation/native";
 import EmptyState from "../components/EmptyState";
 import MaterialCard from "../components/MaterialCard";
 import { COLORS, ENDPOINTS } from "../constants";
 
-export default function HomeScreen() {
+export default function HomeScreen({ navigation }) {
   const [materiais, setMateriais] = useState([]);
   const [busca, setBusca] = useState('');
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false);
 
   // Busca todos os materiais do estoque via GET
   const fetchMateriais = async () => {
@@ -42,16 +41,15 @@ export default function HomeScreen() {
     }
   };
 
-  useEffect(() => {
-    fetchMateriais();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      fetchMateriais();
+    }, [])
+  );
 
   const handleRefresh = () => {
     setRefreshing(true);
     fetchMateriais();
-  };
-  const handleMaterialCadastrado = (novo) => {
-    setMateriais((prev) => [novo, ...prev]);
   };
 
   const handleUpdate = (atualizado) => {
@@ -144,17 +142,11 @@ export default function HomeScreen() {
 
       <TouchableOpacity
         style={styles.fab}
-        onPress={() => setModalVisible(true)}
+        onPress={() => navigation.navigate("Cadastro")}
       >
-        <Text style={styles.fabText}>＋</Text>
+        <MaterialCommunityIcons name="plus" size={22} color="#fff" />
         <Text style={styles.fabLabel}>Novo Material</Text>
       </TouchableOpacity>
-
-      <CadastroModal
-        visible={modalVisible}
-        onClose={() => setModalVisible(false)}
-        onSucesso={handleMaterialCadastrado}
-      />
     </SafeAreaView>
   );
 }
@@ -240,6 +232,5 @@ const styles = StyleSheet.create({
     elevation: 8,
     gap: 8,
   },
-  fabText: { fontSize: 22, color: "#fff", fontWeight: "300", lineHeight: 24 },
   fabLabel: { color: "#fff", fontWeight: "800", fontSize: 15 },
 });
