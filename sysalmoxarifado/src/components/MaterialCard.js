@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Animated, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { COLORS, ENDPOINTS } from "../constants";
 import { validarRetirada } from "../utils/validacoes";
 
@@ -62,9 +63,13 @@ export default function MaterialCard({ item, onUpdate, onDelete }) {
 
   const isConsumo = item.categoria === "consumo";
   const isZerado = Number(item.quantidade) === 0;
+  const isCritico = Number(item.quantidade) < 10;
 
   return (
-    <View style={[styles.card, isZerado && styles.cardZerado]}>
+    <View
+      style={[styles.card, isZerado && styles.cardZerado, isCritico && styles.cardCritico]}
+      {...(isCritico && { accessibilityLabel: "estoque-critico" })}
+    >
       <View style={[styles.sidebar, { backgroundColor: isConsumo ? COLORS.accent : COLORS.primary }]} />
       <View style={styles.content}>
         <View style={styles.header}>
@@ -95,9 +100,11 @@ export default function MaterialCard({ item, onUpdate, onDelete }) {
             />
           </View>
           <TouchableOpacity testID="btn-baixar" style={styles.btnBaixar} onPress={handleBaixar}>
+            <MaterialCommunityIcons name="arrow-down-circle" size={16} color="#fff" />
             <Text style={styles.btnText}>Baixar</Text>
           </TouchableOpacity>
           <TouchableOpacity testID="btn-excluir" style={styles.btnExcluir} onPress={handleExcluir}>
+            <MaterialCommunityIcons name="trash-can" size={16} color="#fff" />
             <Text style={styles.btnText}>Excluir</Text>
           </TouchableOpacity>
         </View>
@@ -113,6 +120,7 @@ export default function MaterialCard({ item, onUpdate, onDelete }) {
 const styles = StyleSheet.create({
   card: { flexDirection: "row", backgroundColor: COLORS.surface, borderRadius: 12, marginHorizontal: 16, marginVertical: 6, shadowColor: "#000", shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.08, shadowRadius: 6, elevation: 3, overflow: "hidden" },
   cardZerado: { borderWidth: 1, borderColor: COLORS.danger },
+  cardCritico: { backgroundColor: "#FFF0F0", borderWidth: 1, borderColor: COLORS.danger },
   sidebar: { width: 5 },
   content: { flex: 1, padding: 14 },
   header: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" },
@@ -130,8 +138,8 @@ const styles = StyleSheet.create({
   fieldGroup: { flex: 1 },
   fieldLabel: { fontSize: 11, fontWeight: "700", color: COLORS.textSecondary, marginBottom: 4, textTransform: "uppercase", letterSpacing: 0.5 },
   fieldInput: { backgroundColor: COLORS.background, borderWidth: 1.5, borderColor: COLORS.border, borderRadius: 8, paddingHorizontal: 10, paddingVertical: 8, fontSize: 14, color: COLORS.textPrimary },
-  btnBaixar: { backgroundColor: COLORS.accent, borderRadius: 8, paddingHorizontal: 14, paddingVertical: 10 },
-  btnExcluir: { backgroundColor: COLORS.danger, borderRadius: 8, paddingHorizontal: 14, paddingVertical: 10 },
+  btnBaixar: { backgroundColor: COLORS.accent, borderRadius: 8, paddingHorizontal: 14, paddingVertical: 10, flexDirection: "row", alignItems: "center", gap: 4 },
+  btnExcluir: { backgroundColor: COLORS.danger, borderRadius: 8, paddingHorizontal: 14, paddingVertical: 10, flexDirection: "row", alignItems: "center", gap: 4 },
   btnText: { color: "#fff", fontWeight: "700", fontSize: 12 },
   toast: { position: "absolute", bottom: 8, right: 8, paddingHorizontal: 12, paddingVertical: 8, borderRadius: 8, elevation: 5 },
   toastSuccess: { backgroundColor: COLORS.accent },
