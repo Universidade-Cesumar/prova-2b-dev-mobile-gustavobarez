@@ -110,6 +110,7 @@ export default function HomeScreen() {
       </View>
 
       <View style={styles.searchContainer}>
+        <MaterialCommunityIcons name="magnify" size={20} color={COLORS.textMuted} />
         <TextInput
           testID="input-busca"
           style={styles.searchInput}
@@ -202,25 +203,29 @@ const styles = StyleSheet.create({
   searchContainer: {
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    gap: 10,
-  },
-  searchInput: {
-    flex: 1,
+    marginHorizontal: 16,
+    marginVertical: 10,
     backgroundColor: COLORS.surface,
     borderWidth: 1.5,
     borderColor: COLORS.border,
-    borderRadius: 10,
-    paddingHorizontal: 14,
+    borderRadius: 12,
+    paddingHorizontal: 12,
+    gap: 8,
+  },
+  searchInput: {
+    flex: 1,
     paddingVertical: 10,
     fontSize: 14,
     color: COLORS.textPrimary,
   },
   totalText: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: "800",
     color: COLORS.primary,
+    backgroundColor: COLORS.surfaceAlt,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 12,
   },
   fab: {
     position: "absolute",
