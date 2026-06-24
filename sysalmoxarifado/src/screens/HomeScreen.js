@@ -7,9 +7,11 @@ import {
   StatusBar,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import CadastroModal from "../components/CadastroModal";
 import EmptyState from "../components/EmptyState";
 import MaterialCard from "../components/MaterialCard";
@@ -17,6 +19,7 @@ import { COLORS, ENDPOINTS } from "../constants";
 
 export default function HomeScreen() {
   const [materiais, setMateriais] = useState([]);
+  const [busca, setBusca] = useState('');
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
@@ -59,7 +62,8 @@ export default function HomeScreen() {
     setMateriais((prev) => prev.filter((m) => m.id !== id));
   };
 
-  const totalItens = materiais.length;
+  const filtrados = materiais.filter(m => m.name.toLowerCase().includes(busca.toLowerCase()));
+  const totalItens = filtrados.length;
   const itensZerados = materiais.filter(
     (m) => Number(m.quantidade) === 0,
   ).length;
@@ -79,7 +83,7 @@ export default function HomeScreen() {
           <Text style={styles.headerEyebrow}>Laboratório de Enfermagem</Text>
           <Text style={styles.headerTitle}>Almoxarifado</Text>
         </View>
-        <Text style={{ fontSize: 28 }}>🏥</Text>
+        <MaterialCommunityIcons name="hospital-box" size={32} color="#fff" />
       </View>
 
       <View style={styles.statsRow}>
@@ -103,13 +107,25 @@ export default function HomeScreen() {
         </View>
       </View>
 
+      <View style={styles.searchContainer}>
+        <TextInput
+          testID="input-busca"
+          style={styles.searchInput}
+          placeholder="Buscar material..."
+          placeholderTextColor={COLORS.textMuted}
+          value={busca}
+          onChangeText={setBusca}
+        />
+        <Text testID="total-itens" style={styles.totalText}>{totalItens}</Text>
+      </View>
+
       <FlatList
         testID="lista-materiais"
-        data={materiais}
+        data={filtrados}
         keyExtractor={(item) => String(item.id)}
         renderItem={({ item }) => <MaterialCard item={item} onUpdate={handleUpdate} onDelete={handleDelete} />}
         contentContainerStyle={
-          materiais.length === 0 ? { flex: 1 } : { paddingBottom: 100 }
+          filtrados.length === 0 ? { flex: 1 } : { paddingBottom: 100 }
         }
         ListEmptyComponent={<EmptyState loading={loading} />}
         refreshControl={
@@ -183,6 +199,29 @@ const styles = StyleSheet.create({
     textTransform: "uppercase",
     letterSpacing: 0.5,
     marginTop: 2,
+  },
+  searchContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    gap: 10,
+  },
+  searchInput: {
+    flex: 1,
+    backgroundColor: COLORS.surface,
+    borderWidth: 1.5,
+    borderColor: COLORS.border,
+    borderRadius: 10,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    fontSize: 14,
+    color: COLORS.textPrimary,
+  },
+  totalText: {
+    fontSize: 16,
+    fontWeight: "800",
+    color: COLORS.primary,
   },
   fab: {
     position: "absolute",
