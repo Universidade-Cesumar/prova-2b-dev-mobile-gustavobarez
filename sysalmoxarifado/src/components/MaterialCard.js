@@ -75,9 +75,18 @@ export default function MaterialCard({ item, onUpdate, onDelete }) {
         <View style={styles.header}>
           <View style={styles.headerLeft}>
             <Text style={styles.nome} numberOfLines={2}>{item.name}</Text>
-            <Text style={[styles.qtdInline, isCritico && styles.qtdInlineCritico]}>
-              {isZerado ? "ZERADO" : `${item.quantidade} unid.`}
-            </Text>
+            <View style={styles.infoRow}>
+              <MaterialCommunityIcons name="package-variant" size={13} color={isCritico ? COLORS.danger : COLORS.accent} />
+              <Text style={[styles.qtdInline, isCritico && styles.qtdInlineCritico]}>
+                {isZerado ? "ZERADO" : `${item.quantidade} unid.`}
+              </Text>
+            </View>
+            {item.dataValidade ? (
+              <View style={styles.infoRow}>
+                <MaterialCommunityIcons name="calendar-clock" size={13} color={COLORS.textSecondary} />
+                <Text style={styles.validadeText}>{item.dataValidade}</Text>
+              </View>
+            ) : null}
             <View style={[styles.badge, { backgroundColor: isConsumo ? "#E6F7F1" : "#E6EEF9" }]}>
               <MaterialCommunityIcons name={isConsumo ? "flask" : "wrench"} size={12} color={isConsumo ? COLORS.accent : COLORS.primary} />
               <Text style={[styles.badgeText, { color: isConsumo ? COLORS.accent : COLORS.primary }]}>
@@ -125,9 +134,11 @@ const styles = StyleSheet.create({
   content: { flex: 1, padding: 14 },
   header: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" },
   headerLeft: { flex: 1 },
-  nome: { fontSize: 15, fontWeight: "700", color: COLORS.textPrimary, marginBottom: 2 },
-  qtdInline: { fontSize: 13, fontWeight: "600", color: COLORS.accent, marginBottom: 5 },
+  nome: { fontSize: 15, fontWeight: "700", color: COLORS.textPrimary, marginBottom: 4 },
+  infoRow: { flexDirection: "row", alignItems: "center", gap: 4, marginBottom: 2 },
+  qtdInline: { fontSize: 13, fontWeight: "600", color: COLORS.accent },
   qtdInlineCritico: { color: COLORS.danger },
+  validadeText: { fontSize: 12, color: COLORS.textSecondary },
   badge: { alignSelf: "flex-start", flexDirection: "row", alignItems: "center", gap: 4, paddingHorizontal: 8, paddingVertical: 3, borderRadius: 20 },
   badgeText: { fontSize: 11, fontWeight: "600" },
   actions: { flexDirection: "row", alignItems: "flex-end", marginTop: 12, gap: 8 },
