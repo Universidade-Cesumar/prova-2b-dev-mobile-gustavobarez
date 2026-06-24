@@ -75,16 +75,15 @@ export default function MaterialCard({ item, onUpdate, onDelete }) {
         <View style={styles.header}>
           <View style={styles.headerLeft}>
             <Text style={styles.nome} numberOfLines={2}>{item.name}</Text>
+            <Text style={[styles.qtdInline, isCritico && styles.qtdInlineCritico]}>
+              {isZerado ? "ZERADO" : `${item.quantidade} unid.`}
+            </Text>
             <View style={[styles.badge, { backgroundColor: isConsumo ? "#E6F7F1" : "#E6EEF9" }]}>
               <MaterialCommunityIcons name={isConsumo ? "flask" : "wrench"} size={12} color={isConsumo ? COLORS.accent : COLORS.primary} />
               <Text style={[styles.badgeText, { color: isConsumo ? COLORS.accent : COLORS.primary }]}>
                 {isConsumo ? "Consumo" : "Permanente"}
               </Text>
             </View>
-          </View>
-          <View style={[styles.qtdBox, isZerado && styles.qtdBoxZerado]}>
-            <Text style={[styles.qtdNum, isZerado && styles.qtdNumZerado]}>{item.quantidade}</Text>
-            <Text style={[styles.qtdLabel, isZerado && styles.qtdLabelZerado]}>{isZerado ? "ZERADO" : "unid."}</Text>
           </View>
         </View>
 
@@ -125,16 +124,12 @@ const styles = StyleSheet.create({
   sidebar: { width: 5 },
   content: { flex: 1, padding: 14 },
   header: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" },
-  headerLeft: { flex: 1, marginRight: 12 },
-  nome: { fontSize: 15, fontWeight: "700", color: COLORS.textPrimary, marginBottom: 5 },
+  headerLeft: { flex: 1 },
+  nome: { fontSize: 15, fontWeight: "700", color: COLORS.textPrimary, marginBottom: 2 },
+  qtdInline: { fontSize: 13, fontWeight: "600", color: COLORS.accent, marginBottom: 5 },
+  qtdInlineCritico: { color: COLORS.danger },
   badge: { alignSelf: "flex-start", flexDirection: "row", alignItems: "center", gap: 4, paddingHorizontal: 8, paddingVertical: 3, borderRadius: 20 },
   badgeText: { fontSize: 11, fontWeight: "600" },
-  qtdBox: { alignItems: "center", backgroundColor: "#E6F7F1", borderRadius: 10, paddingHorizontal: 12, paddingVertical: 8, minWidth: 60 },
-  qtdBoxZerado: { backgroundColor: "#FDECEB" },
-  qtdNum: { fontSize: 22, fontWeight: "800", color: COLORS.accent },
-  qtdNumZerado: { color: COLORS.danger, fontSize: 18 },
-  qtdLabel: { fontSize: 10, color: COLORS.accent, fontWeight: "600", textTransform: "uppercase" },
-  qtdLabelZerado: { color: COLORS.danger, fontSize: 9 },
   actions: { flexDirection: "row", alignItems: "flex-end", marginTop: 12, gap: 8 },
   fieldGroup: { flex: 1 },
   fieldLabel: { fontSize: 11, fontWeight: "700", color: COLORS.textSecondary, marginBottom: 4, textTransform: "uppercase", letterSpacing: 0.5 },
