@@ -117,7 +117,10 @@ export default function HomeScreen({ navigation }) {
           value={busca}
           onChangeText={setBusca}
         />
-        <Text testID="total-itens" style={styles.totalText}>{totalItens}</Text>
+        <View style={styles.totalBadge}>
+          <MaterialCommunityIcons name="format-list-numbered" size={14} color={COLORS.primary} />
+          <Text testID="total-itens" style={styles.totalText}>{totalItens}</Text>
+        </View>
       </View>
 
       <FlatList
@@ -210,14 +213,19 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: COLORS.textPrimary,
   },
+  totalBadge: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: COLORS.surfaceAlt,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 14,
+    gap: 4,
+  },
   totalText: {
     fontSize: 14,
     fontWeight: "800",
     color: COLORS.primary,
-    backgroundColor: COLORS.surfaceAlt,
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 12,
   },
   fab: {
     position: "absolute",
