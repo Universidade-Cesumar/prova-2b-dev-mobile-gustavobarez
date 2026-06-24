@@ -67,10 +67,10 @@ export default function MaterialCard({ item, onUpdate, onDelete }) {
 
   return (
     <View
-      style={[styles.card, isZerado && styles.cardZerado, isCritico && styles.cardCritico]}
+      style={[styles.card, isCritico && styles.cardCritico]}
       {...(isCritico && { accessibilityLabel: "estoque-critico" })}
     >
-      <View style={[styles.sidebar, { backgroundColor: isConsumo ? COLORS.accent : COLORS.primary }]} />
+      <View style={[styles.sidebar, { backgroundColor: isCritico ? COLORS.danger : (isConsumo ? COLORS.accent : COLORS.primary) }]} />
       <View style={styles.content}>
         <View style={styles.header}>
           <View style={styles.headerLeft}>
@@ -119,8 +119,8 @@ export default function MaterialCard({ item, onUpdate, onDelete }) {
 
 const styles = StyleSheet.create({
   card: { flexDirection: "row", backgroundColor: COLORS.surface, borderRadius: 12, marginHorizontal: 16, marginVertical: 6, shadowColor: "#000", shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.08, shadowRadius: 6, elevation: 3, overflow: "hidden" },
-  cardZerado: { borderWidth: 1, borderColor: COLORS.danger },
-  cardCritico: { backgroundColor: "#FFF0F0", borderWidth: 1, borderColor: COLORS.danger },
+  cardZerado: { borderWidth: 1.5, borderColor: COLORS.danger },
+  cardCritico: { backgroundColor: "#FFF0F0", borderWidth: 1.5, borderColor: "#FFCDD2" },
   sidebar: { width: 5 },
   content: { flex: 1, padding: 14 },
   header: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" },
