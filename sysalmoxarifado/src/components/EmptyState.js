@@ -1,18 +1,22 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { COLORS } from '../constants';
+import { View, Text, StyleSheet } from "react-native";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { COLORS } from "../constants";
 
 export default function EmptyState({ loading }) {
   return (
     <View style={styles.container}>
-      <Text style={styles.icon}>{loading ? '⏳' : '📦'}</Text>
+      <MaterialCommunityIcons
+        name={loading ? "loading" : "package-variant-closed"}
+        size={56}
+        color={COLORS.primary}
+      />
       <Text style={styles.title}>
-        {loading ? 'Carregando estoque...' : 'Estoque vazio'}
+        {loading ? "Carregando estoque..." : "Estoque vazio"}
       </Text>
       <Text style={styles.subtitle}>
         {loading
-          ? 'Buscando materiais na API...'
-          : 'Cadastre o primeiro material usando o botão abaixo.'}
+          ? "Buscando materiais na API..."
+          : "Cadastre o primeiro material usando o botão abaixo."}
       </Text>
     </View>
   );
@@ -21,23 +25,23 @@ export default function EmptyState({ loading }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     paddingVertical: 60,
     paddingHorizontal: 32,
   },
-  icon: { fontSize: 56, marginBottom: 16 },
   title: {
     fontSize: 18,
-    fontWeight: '700',
+    fontWeight: "700",
     color: COLORS.textPrimary,
     marginBottom: 8,
-    textAlign: 'center',
+    marginTop: 16,
+    textAlign: "center",
   },
   subtitle: {
     fontSize: 14,
     color: COLORS.textSecondary,
-    textAlign: 'center',
+    textAlign: "center",
     lineHeight: 20,
   },
 });
