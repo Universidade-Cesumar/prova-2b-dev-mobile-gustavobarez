@@ -87,22 +87,24 @@ export default function HomeScreen() {
       </View>
 
       <View style={styles.statsRow}>
-        <View style={styles.statCard}>
-          <Text style={styles.statNum}>{totalItens}</Text>
+        <View style={[styles.statCard, { backgroundColor: "#E8F5E9" }]}>
+          <MaterialCommunityIcons name="package-variant" size={20} color={COLORS.primary} />
+          <Text style={[styles.statNum, { color: COLORS.primary }]}>{totalItens}</Text>
           <Text style={styles.statLabel}>Total</Text>
         </View>
-        <View
-          style={[styles.statCard, itensZerados > 0 && styles.statCardAlerta]}
-        >
-          <Text style={styles.statNum}>{itensZerados}</Text>
+        <View style={[styles.statCard, { backgroundColor: itensZerados > 0 ? "#FFEBEE" : "#FFF3E0" }]}>
+          <MaterialCommunityIcons name="alert-circle" size={20} color={itensZerados > 0 ? COLORS.danger : COLORS.warning} />
+          <Text style={[styles.statNum, { color: itensZerados > 0 ? COLORS.danger : COLORS.warning }]}>{itensZerados}</Text>
           <Text style={styles.statLabel}>Zerados</Text>
         </View>
-        <View style={styles.statCard}>
-          <Text style={styles.statNum}>{itensConsumo}</Text>
+        <View style={[styles.statCard, { backgroundColor: "#E3F2FD" }]}>
+          <MaterialCommunityIcons name="flask" size={20} color="#1976D2" />
+          <Text style={[styles.statNum, { color: "#1976D2" }]}>{itensConsumo}</Text>
           <Text style={styles.statLabel}>Consumo</Text>
         </View>
-        <View style={styles.statCard}>
-          <Text style={styles.statNum}>{totalItens - itensConsumo}</Text>
+        <View style={[styles.statCard, { backgroundColor: "#F3E5F5" }]}>
+          <MaterialCommunityIcons name="wrench" size={20} color="#7B1FA2" />
+          <Text style={[styles.statNum, { color: "#7B1FA2" }]}>{totalItens - itensConsumo}</Text>
           <Text style={styles.statLabel}>Permanente</Text>
         </View>
       </View>
@@ -181,24 +183,21 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 12,
     gap: 8,
-    backgroundColor: COLORS.primary,
   },
   statCard: {
     flex: 1,
-    backgroundColor: "rgba(255,255,255,0.15)",
-    borderRadius: 10,
+    borderRadius: 12,
     paddingVertical: 10,
     alignItems: "center",
+    gap: 2,
   },
-  statCardAlerta: { backgroundColor: "rgba(217,48,37,0.85)" },
-  statNum: { fontSize: 20, fontWeight: "900", color: "#fff" },
+  statNum: { fontSize: 18, fontWeight: "900" },
   statLabel: {
     fontSize: 9,
-    color: "rgba(255,255,255,0.75)",
+    color: COLORS.textSecondary,
     fontWeight: "600",
     textTransform: "uppercase",
     letterSpacing: 0.5,
-    marginTop: 2,
   },
   searchContainer: {
     flexDirection: "row",
