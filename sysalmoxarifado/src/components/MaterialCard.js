@@ -76,8 +76,9 @@ export default function MaterialCard({ item, onUpdate, onDelete }) {
           <View style={styles.headerLeft}>
             <Text style={styles.nome} numberOfLines={2}>{item.name}</Text>
             <View style={[styles.badge, { backgroundColor: isConsumo ? "#E6F7F1" : "#E6EEF9" }]}>
+              <MaterialCommunityIcons name={isConsumo ? "flask" : "wrench"} size={12} color={isConsumo ? COLORS.accent : COLORS.primary} />
               <Text style={[styles.badgeText, { color: isConsumo ? COLORS.accent : COLORS.primary }]}>
-                {isConsumo ? "🧪 Consumo" : "🔧 Permanente"}
+                {isConsumo ? "Consumo" : "Permanente"}
               </Text>
             </View>
           </View>
@@ -126,7 +127,7 @@ const styles = StyleSheet.create({
   header: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" },
   headerLeft: { flex: 1, marginRight: 12 },
   nome: { fontSize: 15, fontWeight: "700", color: COLORS.textPrimary, marginBottom: 5 },
-  badge: { alignSelf: "flex-start", paddingHorizontal: 8, paddingVertical: 3, borderRadius: 20 },
+  badge: { alignSelf: "flex-start", flexDirection: "row", alignItems: "center", gap: 4, paddingHorizontal: 8, paddingVertical: 3, borderRadius: 20 },
   badgeText: { fontSize: 11, fontWeight: "600" },
   qtdBox: { alignItems: "center", backgroundColor: "#E6F7F1", borderRadius: 10, paddingHorizontal: 12, paddingVertical: 8, minWidth: 60 },
   qtdBoxZerado: { backgroundColor: "#FDECEB" },
