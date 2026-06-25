@@ -78,7 +78,7 @@ export default function MaterialCard({ item, onUpdate, onDelete }) {
             <View style={styles.infoRow}>
               <MaterialCommunityIcons name="package-variant" size={13} color={isCritico ? COLORS.danger : COLORS.accent} />
               <Text style={[styles.qtdInline, isCritico && styles.qtdInlineCritico]}>
-                {isZerado ? "ZERADO" : `${item.quantidade} unid.`}
+                {isZerado ? "ZERADO" : `${item.quantidade} unidades`}
               </Text>
             </View>
             {item.dataValidade ? (
